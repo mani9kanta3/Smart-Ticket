@@ -1,0 +1,9 @@
+streamlit
+plotly
+scikit-learn
+pandas
+numpy
+onnxruntime
+transformers
+pyyaml
+joblib
