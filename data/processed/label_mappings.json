@@ -1,0 +1,38 @@
+{
+  "category_to_id": {
+    "Account Access": 0,
+    "Account Management": 1,
+    "Balance & Statement": 2,
+    "Card Services": 3,
+    "Fees & Charges": 4,
+    "General Inquiry": 5,
+    "Payment Issues": 6,
+    "Refund & Dispute": 7,
+    "Technical Issues": 8,
+    "Transfer & Transaction": 9
+  },
+  "id_to_category": {
+    "0": "Account Access",
+    "1": "Account Management",
+    "2": "Balance & Statement",
+    "3": "Card Services",
+    "4": "Fees & Charges",
+    "5": "General Inquiry",
+    "6": "Payment Issues",
+    "7": "Refund & Dispute",
+    "8": "Technical Issues",
+    "9": "Transfer & Transaction"
+  },
+  "priority_to_id": {
+    "P0-Critical": 0,
+    "P1-High": 1,
+    "P2-Medium": 2,
+    "P3-Low": 3
+  },
+  "id_to_priority": {
+    "0": "P0-Critical",
+    "1": "P1-High",
+    "2": "P2-Medium",
+    "3": "P3-Low"
+  }
+}

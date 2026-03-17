@@ -21,7 +21,10 @@ from src.api.schemas import (
     HealthResponse,
     ModelComparisonResponse,
 )
-from src.api.predict import predictor
+try:
+    from src.api.predict import predictor
+except ImportError:
+    from src.api.predict_baseline import predictor
 
 
 # Track server start time for uptime calculation

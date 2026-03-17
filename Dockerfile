@@ -1,28 +1,30 @@
-# SmartTicket Docker Image
-# Multi-stage build for smaller final image
-
+# SmartTicket Cloud Deployment
 FROM python:3.12-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    gcc \
-    && rm -rf /var/lib/apt/lists/*
+# Install minimal dependencies
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn \
+    pydantic \
+    python-multipart \
+    scikit-learn \
+    pandas \
+    numpy \
+    joblib \
+    pyyaml
 
-# Copy requirements first (Docker caches this layer)
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy project files
-COPY src/ ./src/
+# Copy only what's needed
+COPY src/api/ ./src/api/
 COPY configs/ ./configs/
-COPY models/ ./models/
-COPY data/processed/ ./data/processed/
 
-# Expose ports for FastAPI and Streamlit
-EXPOSE 8000 8501
+# These will be copied during cloud build
+COPY models/tfidf_vectorizer.joblib ./models/
+COPY models/baseline_category_model.joblib ./models/
+COPY models/baseline_priority_model.joblib ./models/
+COPY data/processed/label_mappings.json ./data/processed/
 
-# Default command: run FastAPI
-CMD ["uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8080
+
+CMD ["uvicorn", "src.api.app:app", "--host", "0.0.0.0", "--port", "8080"]

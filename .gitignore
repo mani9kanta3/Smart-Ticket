@@ -3,8 +3,11 @@ __pycache__/
 *.pyc
 .env
 data/raw/
-data/processed/
-models/
+models/smartticket_bert.onnx
+models/bert_finetuned/
+models/bilstm_best.pth
+models/bilstm_vocab.json
+models/model_comparison.json
 mlruns/
 .ipynb_checkpoints/
 *.egg-info/
