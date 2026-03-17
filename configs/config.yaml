@@ -1,0 +1,52 @@
+# SmartTicket Configuration
+project:
+  name: "SmartTicket"
+  version: "1.0.0"
+
+data:
+  banking77_name: "PolyAI/banking77"
+  clinc150_name: "clinc_oos"
+  clinc150_config: "plus"
+  num_categories: 10
+  test_size: 0.1
+  val_size: 0.1
+  random_state: 42
+  max_seq_length: 64
+
+models:
+  baseline:
+    max_features: 10000
+    ngram_range: [1, 2]
+  bilstm:
+    embedding_dim: 300
+    hidden_dim: 256
+    num_layers: 2
+    dropout: 0.3
+    fc_dropout: 0.5
+    batch_size: 32
+    learning_rate: 0.001
+    epochs: 20
+    patience: 3
+  bert:
+    model_name: "distilbert-base-uncased"
+    batch_size: 16
+    learning_rate: 0.00002
+    epochs: 5
+    warmup_steps: 500
+    weight_decay: 0.01
+    max_length: 128
+
+training:
+  device: "cuda"
+  seed: 42
+
+mlflow:
+  tracking_uri: "mlruns"
+  experiment_name: "SmartTicket"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+
+dashboard:
+  port: 8501

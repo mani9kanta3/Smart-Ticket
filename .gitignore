@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.env
+data/raw/
+data/processed/
+models/
+mlruns/
+.ipynb_checkpoints/
+*.egg-info/
+dist/
+build/
+reports/drift_reports/*.html
+E:\pip_cache/
+.pytest_cache/

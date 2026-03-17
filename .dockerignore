@@ -1,0 +1,15 @@
+venv/
+__pycache__/
+*.pyc
+.git/
+.github/
+mlruns/
+notebooks/
+data/raw/
+data/external/
+reports/
+tests/
+*.md
+.gitignore
+.env
+E:\pip_cache/
