@@ -2,6 +2,18 @@
 
 ---
 
+## 🌐 Live Demo
+
+| Component | Link |
+|:----------|:-----|
+| **🖥️ Dashboard** | [smart-ticket.streamlit.app](https://smart-ticket.streamlit.app) |
+| **⚡ API Docs** | [smartticket-363391410596.asia-south1.run.app/docs](https://smartticket-363391410596.asia-south1.run.app/docs) |
+| **💻 GitHub** | [github.com/mani9kanta3/Smart-Ticket](https://github.com/mani9kanta3/Smart-Ticket) |
+
+> The Streamlit dashboard connects to the FastAPI backend deployed on **Google Cloud Run (Mumbai, asia-south1)** for real-time predictions powered by **DistilBERT + ONNX Runtime**.
+
+---
+
 ## The Problem
 
 Every day, customer support teams across banking, fintech, and SaaS companies receive **thousands of support tickets**. Each one needs to be read by a human agent who must:
@@ -25,8 +37,8 @@ But SmartTicket isn't just a model — it's a **complete production system**:
 - **3 progressively advanced ML/DL models** showing a clear engineering journey
 - **Multi-task learning** — one model predicts both category AND priority simultaneously
 - **ONNX-optimized inference** for production-grade speed
-- **FastAPI backend** serving real-time and batch predictions
-- **3-tab Streamlit dashboard** for business stakeholders
+- **FastAPI backend** deployed on **Google Cloud Run** serving real-time and batch predictions
+- **3-tab Streamlit dashboard** deployed on **Streamlit Community Cloud**, connected to the API
 - **MLflow experiment tracking** with 30+ logged experiments
 - **Evidently AI drift monitoring** to catch model degradation early
 - **Docker containerization** and **CI/CD** via GitHub Actions
@@ -112,8 +124,8 @@ The final step was exporting the fine-tuned DistilBERT to ONNX format. ONNX Runt
                                            │
                     ┌──────────────────────▼──────────────────────────────┐
                     │              PREPROCESSING LAYER                    │
-                    │   Text cleaning → Tokenization → Encoding           │ 
-                    │   TF-IDF / Word Embeddings / BERT Subword Tokens    │ 
+                    │   Text cleaning → Tokenization → Encoding           │
+                    │   TF-IDF / Word Embeddings / BERT Subword Tokens    │
                     └──────────────────────┬──────────────────────────────┘
                                            │
                     ┌──────────────────────▼──────────────────────────────┐
@@ -128,15 +140,16 @@ The final step was exporting the fine-tuned DistilBERT to ONNX format. ONNX Runt
                     │   Zero accuracy loss after conversion               │
                     └──────────────────────┬──────────────────────────────┘
                                            │
-              ┌────────────────────────────▼────────────────────────────────┐
-              │                     SERVING LAYER                           │
-              │                                                             │
-              │   FastAPI Backend              Streamlit Dashboard          │ 
-              │   ├── POST /classify           ├── Tab 1: Live Demo         │ 
-              │   ├── POST /batch_classify     ├── Tab 2: Batch Analysis    │
-              │   └── GET  /health             └── Tab 3: Model Comparison  │
-              │                                                             │
-              └─────────────────────────────────────────────────────────────┘
+    ┌────────────────────────────────────────────────────────────────────────────┐
+    │                          SERVING LAYER                                     │
+    │                                                                            │
+    │   FastAPI Backend (Google Cloud Run)    Streamlit Dashboard (Cloud)        │
+    │   ├── POST /classify                    ├── Tab 1: Live Demo               │
+    │   ├── POST /batch_classify      ◄────►  ├── Tab 2: Batch Analysis          │
+    │   └── GET  /health              (API)   └── Tab 3: Model Comparison        │
+    │                                                                            │
+    │   🌏 Mumbai (asia-south1)               🌏 Streamlit Community Cloud      │
+    └────────────────────────────────────────────────────────────────────────────┘
                                            │
               ┌────────────────────────────▼───────────────────────────────┐
               │                     MLOps LAYER                            │
@@ -160,6 +173,7 @@ The final step was exporting the fine-tuned DistilBERT to ONNX format. ONNX Runt
 | **Dashboard** | Streamlit, Plotly |
 | **Experiment Tracking** | MLflow |
 | **Model Monitoring** | Evidently AI |
+| **Cloud Deployment** | Google Cloud Run (Mumbai), Streamlit Community Cloud |
 | **Containerization** | Docker, Docker Compose |
 | **CI/CD** | GitHub Actions |
 | **Datasets** | Banking77, CLINC150 (HuggingFace) |
@@ -189,10 +203,11 @@ SmartTicket/
 │   ├── api/                   # FastAPI backend
 │   │   ├── schemas.py         # Request/response models
 │   │   ├── predict.py         # ONNX inference engine
+│   │   ├── predict_baseline.py# Baseline predictor (cloud fallback)
 │   │   └── app.py             # API endpoints
 │   │
 │   └── dashboard/             # Streamlit frontend
-│       └── streamlit_app.py   # 3-tab business dashboard
+│       └── streamlit_app.py   # 3-tab dashboard (connected to API)
 │
 ├── configs/config.yaml        # All hyperparameters in one place
 ├── models/                    # Saved model files (.onnx, .pth, .joblib)
@@ -203,7 +218,7 @@ SmartTicket/
 │   ├── figures/               # EDA plots, confusion matrices, comparisons
 │   └── drift_reports/         # Evidently AI HTML reports
 ├── tests/                     # Unit tests (9/9 passing)
-├── Dockerfile                 # Container build
+├── Dockerfile                 # Container build for Cloud Run
 ├── docker-compose.yml         # Multi-service orchestration
 └── .github/workflows/         # CI/CD pipeline
 ```
@@ -221,8 +236,8 @@ SmartTicket/
 ### 1. Clone & Setup
 
 ```bash
-git clone https://github.com/Mani9kanta3/SmartTicket.git
-cd SmartTicket
+git clone https://github.com/mani9kanta3/Smart-Ticket.git
+cd Smart-Ticket
 python -m venv venv
 venv\Scripts\activate          # Windows
 # source venv/bin/activate     # Linux/Mac
@@ -246,14 +261,14 @@ python src/models/bert_train.py        # BERT:     ~90.6% accuracy
 python src/models/export_onnx.py       # ONNX export + benchmarks
 ```
 
-### 4. Run the API
+### 4. Run the API Locally
 
 ```bash
 uvicorn src.api.app:app --port 8000
 # Swagger docs: http://localhost:8000/docs
 ```
 
-### 5. Run the Dashboard
+### 5. Run the Dashboard Locally
 
 ```bash
 streamlit run src/dashboard/streamlit_app.py
@@ -270,12 +285,32 @@ docker-compose up --build
 
 ---
 
-## API Usage
+## Cloud Deployment
 
-### Classify a Single Ticket
+### FastAPI Backend → Google Cloud Run
+
+The API is deployed on Google Cloud Run in the **Mumbai (asia-south1)** region for low-latency access from India. Cloud Run automatically scales to zero when idle (no cost) and handles traffic spikes.
 
 ```bash
-curl -X POST http://localhost:8000/classify \
+gcloud run deploy smartticket --source . --region asia-south1 --allow-unauthenticated --port 8080 --memory 1Gi
+```
+
+**Live API:** [smartticket-363391410596.asia-south1.run.app/docs](https://smartticket-363391410596.asia-south1.run.app/docs)
+
+### Streamlit Dashboard → Streamlit Community Cloud
+
+The dashboard is deployed on Streamlit Community Cloud and **connects to the FastAPI backend** for all predictions. This is a production-like microservices architecture where the frontend and backend are separate services communicating via REST API.
+
+**Live Dashboard:** [smart-ticket.streamlit.app](https://smart-ticket.streamlit.app)
+
+---
+
+## API Usage
+
+### Live API Endpoint
+
+```bash
+curl -X POST https://smartticket-363391410596.asia-south1.run.app/classify \
   -H "Content-Type: application/json" \
   -d '{"text": "Someone stole my card and made unauthorized purchases"}'
 ```
@@ -296,6 +331,12 @@ curl -X POST http://localhost:8000/classify \
 ### Batch Classification
 
 Upload a CSV with a `text` column to the `/batch_classify` endpoint — returns classified CSV with category, priority, confidence, and routing team added.
+
+### Health Check
+
+```bash
+curl https://smartticket-363391410596.asia-south1.run.app/health
+```
 
 ---
 
@@ -344,13 +385,16 @@ A single model predicts both category AND priority. The shared representation ac
 **Why ONNX?**
 Production deployments often run on CPU (cheaper than GPU instances). ONNX Runtime provides ~2x CPU speedup over PyTorch with zero accuracy loss. It also removes the PyTorch dependency from the deployment stack.
 
+**Why separate frontend and backend?**
+The Streamlit dashboard calls the FastAPI backend via REST API — a production-like microservices architecture. The API can serve mobile apps, Slack bots, or any other client. The dashboard is just one consumer of the API.
+
 ---
 
 ## MLOps Features
 
 - **MLflow Experiment Tracking** — 30+ experiments logged with parameters, metrics, and model artifacts. Compare models side-by-side in the MLflow UI.
 - **Evidently AI Drift Monitoring** — Automated detection of data distribution changes. Generates HTML reports comparing training vs production data. Catches model degradation before it impacts customers.
-- **Docker Containerization** — Reproducible deployment with Docker Compose orchestrating FastAPI + Streamlit services.
+- **Docker Containerization** — Reproducible deployment with Docker Compose orchestrating FastAPI + Streamlit services. Deployed to Google Cloud Run.
 - **CI/CD Pipeline** — GitHub Actions automatically runs 9 unit tests on every push. Failed tests block deployment.
 - **Model Registry** — Best model versioned and tagged in MLflow for reproducibility.
 
@@ -377,6 +421,8 @@ pytest tests/ -v
 
 5. **Production optimization is not optional** — ONNX export provided 2x CPU speedup with zero accuracy loss. In production, inference speed directly impacts user experience and infrastructure costs.
 
+6. **Microservices architecture scales** — Separating the API (Cloud Run) from the dashboard (Streamlit Cloud) means each can scale independently. The API can serve multiple frontends without code changes.
+
 ---
 
 ## Future Enhancements
@@ -386,6 +432,7 @@ pytest tests/ -v
 - **Active learning** — Use low-confidence predictions to find the most valuable examples for retraining
 - **Multilingual support** — Fine-tune multilingual BERT for non-English tickets
 - **Real-time retraining pipeline** — Automated retraining when Evidently detects significant drift
+- **PostgreSQL logging** — Store all predictions for analytics and audit trail
 
 ---
 
@@ -397,5 +444,3 @@ pytest tests/ -v
 - 💻 [github.com/Mani9kanta3](https://github.com/Mani9kanta3)
 
 ---
-
-*Built as an end-to-end deep learning + NLP + MLOps portfolio project demonstrating the full lifecycle from raw data to production deployment.*
