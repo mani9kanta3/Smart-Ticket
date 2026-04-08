@@ -21,7 +21,7 @@ class TicketRequest(BaseModel):
 
 
 class TicketResponse(BaseModel):
-    """Single ticket classification response."""
+    """Single ticket classification response with confidence-based routing."""
     text: str
     category: str
     category_id: int
@@ -30,6 +30,8 @@ class TicketResponse(BaseModel):
     priority_id: int
     priority_confidence: float
     routing_team: str
+    review_status: str  # "auto_routed" or "needs_human_review"
+    review_reason: Optional[str] = None
     inference_time_ms: float
 
 

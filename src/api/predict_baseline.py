@@ -45,7 +45,14 @@ class SmartTicketPredictor:
         self.loaded = True
         print("SmartTicket baseline model ready!")
 
-    def predict(self, text: str) -> dict:
+    def predict(self, text: str, confidence_threshold: float = 0.85) -> dict:
+        """
+        Classify a single ticket with confidence-based human fallback.
+        
+        If model confidence is below threshold, flags for human review
+        instead of forcing a low-confidence prediction. This is critical
+        for production ML systems — the model should know what it doesn't know.
+        """
         if not self.loaded:
             raise RuntimeError("Model not loaded. Call load() first.")
 
@@ -59,20 +66,35 @@ class SmartTicketPredictor:
         cat_probs = self.cat_model.predict_proba(X)[0]
         pri_probs = self.pri_model.predict_proba(X)[0]
 
+        cat_confidence = float(cat_probs[cat_id])
+        pri_confidence = float(pri_probs[pri_id])
+
         cat_name = self.label_mappings["id_to_category"][str(cat_id)]
         pri_name = self.label_mappings["id_to_priority"][str(pri_id)]
 
         inference_time = (time.time() - start_time) * 1000
 
+        # Confidence-based routing decision
+        if cat_confidence < confidence_threshold:
+            review_status = "needs_human_review"
+            review_reason = f"Low confidence ({cat_confidence:.1%} < {confidence_threshold:.0%} threshold)"
+            routing_team = "Human Review Queue"
+        else:
+            review_status = "auto_routed"
+            review_reason = None
+            routing_team = ROUTING_MAP.get(cat_name, "General Support Team")
+
         return {
             "text": text,
             "category": cat_name,
             "category_id": cat_id,
-            "category_confidence": round(float(cat_probs[cat_id]), 4),
+            "category_confidence": round(cat_confidence, 4),
             "priority": pri_name,
             "priority_id": pri_id,
-            "priority_confidence": round(float(pri_probs[pri_id]), 4),
-            "routing_team": ROUTING_MAP.get(cat_name, "General Support Team"),
+            "priority_confidence": round(pri_confidence, 4),
+            "routing_team": routing_team,
+            "review_status": review_status,
+            "review_reason": review_reason,
             "inference_time_ms": round(inference_time, 2),
         }
 

@@ -1,0 +1,15 @@
+{
+  "TF-IDF + LogReg": {
+    "cpu_inference_ms": 1.14
+  },
+  "BiLSTM (PyTorch)": {
+    "cpu_inference_ms": 9.16
+  },
+  "DistilBERT (PyTorch)": {
+    "cpu_inference_ms": 78.0
+  },
+  "DistilBERT (ONNX)": {
+    "cpu_inference_ms": 38.01
+  },
+  "onnx_speedup_vs_pytorch_cpu": 2.05
+}
