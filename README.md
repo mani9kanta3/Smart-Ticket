@@ -104,12 +104,14 @@ The final step was exporting the fine-tuned DistilBERT to ONNX format. ONNX Runt
 
 ## Results at a Glance
 
-| Model | Category Accuracy | Category F1 | Priority F1 | Inference | Size |
+| Model | Category Accuracy | Category F1 | Priority F1 | CPU Inference | Size |
 |:------|:-:|:-:|:-:|:-:|:-:|
-| TF-IDF + Logistic Regression | 87.5% | 0.875 | 0.893 | 0.39 ms | 5 MB |
-| BiLSTM (PyTorch) | 87.8% | 0.878 | 0.905 | 14.15 ms | 50 MB |
-| DistilBERT Fine-tuned | **90.6%** | **0.906** | **0.916** | 8.15 ms | 250 MB |
-| DistilBERT + ONNX | **90.6%** | **0.906** | **0.916** | 25.28 ms | 254 MB |
+| TF-IDF + Logistic Regression | 87.5% | 0.875 | 0.893 | 1.14 ms | 5 MB |
+| BiLSTM (PyTorch) | 87.8% | 0.878 | 0.905 | 9.16 ms | 50 MB |
+| DistilBERT Fine-tuned | **90.6%** | **0.906** | **0.916** | 78.00 ms | 250 MB |
+| DistilBERT + ONNX | **90.6%** | **0.906** | **0.916** | **38.01 ms** | 254 MB |
+
+> **All inference times measured on the SAME CPU for fair comparison.** ONNX provides a **2.05x speedup** over PyTorch on CPU. PyTorch on GPU achieves 8.15 ms but GPU instances cost 5-10x more than CPU in production.
 
 ---
 

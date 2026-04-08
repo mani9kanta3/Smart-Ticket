@@ -303,26 +303,27 @@ with tab3:
     st.markdown("Comparing all 4 models trained during the SmartTicket project.")
 
     # Hardcoded comparison data (from our training results)
+    # Fair CPU benchmark numbers (same hardware comparison)
     comparison = {
         "TF-IDF + LogReg": {
             "cat_accuracy": 0.8753, "cat_f1": 0.8752,
             "pri_accuracy": 0.8927, "pri_f1": 0.8928,
-            "inference_ms": 0.39, "model_size_mb": 5,
+            "inference_ms": 1.14, "model_size_mb": 5,
         },
         "BiLSTM (PyTorch)": {
             "cat_accuracy": 0.8781, "cat_f1": 0.8780,
             "pri_accuracy": 0.9051, "pri_f1": 0.9050,
-            "inference_ms": 14.15, "model_size_mb": 50,
+            "inference_ms": 9.16, "model_size_mb": 50,
         },
         "DistilBERT (PyTorch)": {
             "cat_accuracy": 0.9058, "cat_f1": 0.9058,
             "pri_accuracy": 0.9155, "pri_f1": 0.9155,
-            "inference_ms": 8.15, "model_size_mb": 250,
+            "inference_ms": 78.00, "model_size_mb": 250,
         },
         "DistilBERT (ONNX)": {
             "cat_accuracy": 0.9058, "cat_f1": 0.9058,
             "pri_accuracy": 0.9155, "pri_f1": 0.9155,
-            "inference_ms": 25.28, "model_size_mb": 254,
+            "inference_ms": 38.01, "model_size_mb": 254,
         },
     }
 
